@@ -419,7 +419,9 @@ function render(){
 /* ---------- ส่งข้อมูลไป Google Sheet ---------- */
 const SYNCK="momcare.sync",DIRTYK="momcare.dirty";
 let syncUrl=null,dirty={},busy=false,lastOk=null,lastErr=false,pushT;
+const DEFAULT_SYNC="https://script.google.com/macros/s/AKfycbz4mCuL-y6yXjPCLZzFxdxAQgs17rapP-iFOdkivG6CexTMgG2aU16lVw8ObKKnUXB8Gg/exec";
 try{syncUrl=localStorage.getItem(SYNCK);dirty=JSON.parse(localStorage.getItem(DIRTYK)||"{}")||{};}catch(e){}
+if(syncUrl==="off")syncUrl=null;else if(!syncUrl)syncUrl=DEFAULT_SYNC;
 function urlFrom(t){
   t=decodeURIComponent(String(t||"")).trim();
   const m=t.match(/^https:\/\/script\.google\.com\/macros\/s\/([\w-]+)\/exec/);
@@ -496,7 +498,7 @@ $("syncCopy").onclick=()=>{
   try{navigator.clipboard.writeText(link).then(()=>toast("คัดลอกลิงก์แล้ว ส่งให้แม่ได้เลย"),pick);}catch(e){pick();}
 };
 $("syncOff").onclick=()=>{
-  syncUrl=null;try{localStorage.removeItem(SYNCK);}catch(e){}
+  syncUrl=null;try{localStorage.setItem(SYNCK,"off");}catch(e){}
   lastOk=null;lastErr=false;setSync();toast("เลิกเชื่อมต่อแล้ว ข้อมูลยังอยู่ในเครื่อง");
 };
 window.addEventListener("online",sync);
